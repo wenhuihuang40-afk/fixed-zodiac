@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>星友默契 Zodiac Buddies</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            color: #fff;
+            background:
+                radial-gradient(ellipse at 14% 22%, rgba(255, 205, 107, .9) 0 3px, transparent 4px),
+                radial-gradient(ellipse at 82% 17%, rgba(255, 205, 107, .9) 0 3px, transparent 4px),
+                radial-gradient(ellipse at 91% 71%, rgba(255, 205, 107, .8) 0 2px, transparent 3px),
+                radial-gradient(ellipse at 8% 82%, rgba(255, 205, 107, .8) 0 2px, transparent 3px),
+                linear-gradient(145deg, #352654, #263b68 52%, #31596a);
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before,
+        body::after {
+            position: fixed;
+            z-index: -1;
+            display: grid;
+            place-items: center;
+            width: 100px;
+            aspect-ratio: 1;
+            border: 1px solid rgba(255, 236, 181, .45);
+            border-radius: 50%;
+            color: rgba(255, 241, 197, .9);
+            font-size: 38px;
+            content: "♌";
+            box-shadow: 0 0 0 12px rgba(255, 255, 255, .035), 0 0 35px rgba(255, 218, 141, .2);
+        }
+
+        body::before {
+            top: 8%;
+            left: 8%;
+            transform: rotate(-12deg);
+        }
+
+        body::after {
+            right: 8%;
+            bottom: 8%;
+            content: "♓";
+            transform: rotate(12deg);
+        }
+
+        .container {
+            width: min(100%, 760px);
+            padding: 28px;
+            text-align: center;
+            background: rgba(33, 37, 70, 0.88);
+            border: 1px solid rgba(255, 242, 206, 0.38);
+            border-radius: 12px;
+            box-shadow: 0 18px 50px rgba(10, 16, 38, 0.35);
+            backdrop-filter: blur(10px);
+        }
+
+        .topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 8px;
+        }
+
+        h1 {
+            color: #ffe39a;
+            font-size: 24px;
+            letter-spacing: 2px;
+        }
+
+        .language-switch {
+            display: inline-flex;
+            padding: 3px;
+            border: 1px solid rgba(255, 255, 255, .3);
+            border-radius: 7px;
+            background: rgba(8, 13, 34, .45);
+        }
+
+        .language-switch button {
+            width: auto;
+            padding: 6px 9px;
+            border-radius: 5px;
+            background: transparent;
+            color: #e7e3f3;
+            font-size: 13px;
+        }
+
+        .language-switch button[aria-pressed="true"] {
+            background: #ffe39a;
+            color: #312b4d;
+        }
+
+        .subtitle {
+            margin-bottom: 24px;
+            color: #dedbea;
+            font-size: 14px;
+        }
+
+        .mode-switch {
+            display: inline-grid;
+            grid-template-columns: 1fr 1fr;
+            width: min(100%, 360px);
+            margin: 0 auto 20px;
+            padding: 4px;
+            border: 1px solid rgba(255, 255, 255, .24);
+            border-radius: 8px;
+            background: rgba(8, 13, 34, .45);
+        }
+
+        .mode-switch button {
+            padding: 9px 12px;
+            border-radius: 5px;
+            background: transparent;
+            color: #e7e3f3;
+            font-size: 14px;
+        }
+
+        .mode-switch button[aria-pressed="true"] {
+            background: #ffc7b2;
+            color: #382a43;
+        }
+
+        .people {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px;
+            margin-bottom: 22px;
+            text-align: left;
+        }
+
+        .person {
+            padding: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            background: rgba(18, 25, 53, 0.72);
+        }
+
+        .person h2 {
+            margin-bottom: 14px;
+            color: #fff;
+            font-size: 16px;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        .input-item {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+            text-align: left;
+        }
+
+        label {
+            margin-bottom: 8px;
+            color: #e0e0e0;
+            font-size: 14px;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            color: #fff;
+            font-size: 16px;
+            text-align: center;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 6px;
+            outline: none;
+        }
+
+        input:focus {
+            border-color: #ffd700;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            color: #fff;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            background: linear-gradient(45deg, #ff416c, #ff4b2b);
+            border: 0;
+            border-radius: 6px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 75, 43, 0.4);
+        }
+
+        #result {
+            margin-top: 22px;
+            padding: 18px;
+            text-align: left;
+            border-top: 1px solid rgba(255, 255, 255, 0.22);
+        }
+
+        #result[hidden] {
+            display: none;
+        }
+
+        .result-heading {
+            margin-bottom: 14px;
+            color: #ffe39a;
+            font-size: 18px;
+            text-align: center;
+        }
+
+        .zodiac-pair {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 18px;
+            text-align: center;
+        }
+
+        .zodiac-person strong,
+        .zodiac-person span {
+            display: block;
+        }
+
+        .zodiac-person strong {
+            margin-bottom: 5px;
+            color: #dedee7;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .zodiac-person span {
+            color: #fff;
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .pair-mark {
+            color: #ffb4a2;
+            font-size: 22px;
+        }
+
+        .score-line {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            color: #ececf2;
+            font-size: 14px;
+        }
+
+        .score-line strong {
+            color: #ffe39a;
+            font-size: 28px;
+        }
+
+        .score-track {
+            height: 10px;
+            overflow: hidden;
+            background: rgba(255, 255, 255, 0.18);
+            border-radius: 5px;
+        }
+
+        .score-fill {
+            width: 0;
+            height: 100%;
+            background: linear-gradient(90deg, #ff7b65, #ffd166);
+            border-radius: inherit;
+            transition: width 300ms ease;
+        }
+
+        .interpretation {
+            margin-top: 14px;
+            color: #f2f0f4;
+            font-size: 14px;
+            line-height: 1.7;
+        }
+
+        .sign-notes {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-top: 18px;
+        }
+
+        .sign-note {
+            padding: 14px;
+            border-left: 3px solid #ffc88e;
+            border-radius: 6px;
+            background: rgba(255, 255, 255, .07);
+            color: #f2f0f4;
+            font-size: 13px;
+            line-height: 1.65;
+        }
+
+        .sign-note strong {
+            display: block;
+            margin-bottom: 5px;
+            color: #ffe39a;
+            font-size: 14px;
+        }
+
+        .profile-section {
+            margin-top: 8px;
+        }
+
+        .profile-section + .profile-section {
+            margin-top: 10px;
+        }
+
+        .profile-label {
+            display: block;
+            margin-bottom: 2px;
+            color: #ffcfaa;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .profile-copy {
+            color: #f2f0f4;
+            font-size: 13px;
+            line-height: 1.55;
+        }
+
+        .mbti-note {
+            display: block;
+            margin-top: 4px;
+            color: #c8c6d1;
+            font-size: 11px;
+            line-height: 1.5;
+        }
+
+        .date-distance {
+            margin-top: 10px;
+            color: #dedbea;
+            font-size: 13px;
+            text-align: center;
+        }
+
+        .disclaimer {
+            margin-top: 10px;
+            color: #c8c6d1;
+            font-size: 12px;
+        }
+
+        #result.error {
+            color: #ff6b6b;
+            font-size: 14px;
+        }
+
+        @media (max-width: 560px) {
+            .people {
+                flex-direction: column;
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+
+            .container {
+                padding: 20px;
+            }
+
+            .person {
+                padding: 14px;
+            }
+
+            .sign-notes {
+                grid-template-columns: 1fr;
+            }
+
+            body::before,
+            body::after {
+                width: 66px;
+                font-size: 26px;
+                opacity: .65;
+            }
+        }
+    </style>
+</head>
+<body>
+    <main class="container">
+        <div class="topbar">
+            <h1 data-i18n="title">星友默契</h1>
+            <div class="language-switch" role="group" aria-label="Language">
+                <button type="button" data-language="zh" aria-pressed="true">中文</button>
+                <button type="button" data-language="en" aria-pressed="false">EN</button>
+            </div>
+        </div>
+        <p class="subtitle" data-i18n="subtitle">输入生日，看看你和好友的星座默契</p>
+
+        <div class="mode-switch" role="group" aria-label="Relationship mode">
+            <button type="button" data-mode="friendship" aria-pressed="true" data-i18n="friendshipMode">好友默契</button>
+            <button type="button" data-mode="romance" aria-pressed="false" data-i18n="romanceMode">情侣亲密度</button>
+        </div>
+
+        <form id="zodiac-form" novalidate>
+            <div class="people">
+                <section class="person" aria-labelledby="person-one-title">
+                    <h2 id="person-one-title" data-i18n="you">你</h2>
+                    <div class="input-group">
+                        <div class="input-item">
+                            <label for="month-one" data-i18n="month">出生月份</label>
+                            <input type="number" id="month-one" placeholder="1 - 12" min="1" max="12" step="1" inputmode="numeric" required>
+                        </div>
+                        <div class="input-item">
+                            <label for="day-one" data-i18n="day">出生日期</label>
+                            <input type="number" id="day-one" placeholder="1 - 31" min="1" max="31" step="1" inputmode="numeric" required>
+                        </div>
+                    </div>
+                </section>
+                <section class="person" aria-labelledby="person-two-title">
+                    <h2 id="person-two-title" data-i18n="friend">好友</h2>
+                    <div class="input-group">
+                        <div class="input-item">
+                            <label for="month-two" data-i18n="month">出生月份</label>
+                            <input type="number" id="month-two" placeholder="1 - 12" min="1" max="12" step="1" inputmode="numeric" required>
+                        </div>
+                        <div class="input-item">
+                            <label for="day-two" data-i18n="day">出生日期</label>
+                            <input type="number" id="day-two" placeholder="1 - 31" min="1" max="31" step="1" inputmode="numeric" required>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <button type="submit" data-i18n="submit">查询星座与亲密度</button>
+        </form>
+
+        <section id="result" role="status" aria-live="polite" hidden></section>
+    </main>
+
+    <script>
+        const form = document.getElementById('zodiac-form');
+        const people = [
+            {
+                name: '你',
+                monthInput: document.getElementById('month-one'),
+                dayInput: document.getElementById('day-one')
+            },
+            {
+                name: '好友',
+                monthInput: document.getElementById('month-two'),
+                dayInput: document.getElementById('day-two')
+            }
+        ];
+        const resultDiv = document.getElementById('result');
+        const languageButtons = document.querySelectorAll('[data-language]');
+        const modeButtons = document.querySelectorAll('[data-mode]');
+        let language = 'zh';
+
+        const zodiacRules = [
+            { endDay: 19, before: '♑ 摩羯座', after: '♒ 水瓶座' },
+            { endDay: 18, before: '♒ 水瓶座', after: '♓ 双鱼座' },
+            { endDay: 20, before: '♓ 双鱼座', after: '♈ 白羊座' },
+            { endDay: 19, before: '♈ 白羊座', after: '♉ 金牛座' },
+            { endDay: 20, before: '♉ 金牛座', after: '♊ 双子座' },
+            { endDay: 21, before: '♊ 双子座', after: '♋ 巨蟹座' },
+            { endDay: 22, before: '♋ 巨蟹座', after: '♌ 狮子座' },
+            { endDay: 22, before: '♌ 狮子座', after: '♍ 处女座' },
+            { endDay: 22, before: '♍ 处女座', after: '♎ 天秤座' },
+            { endDay: 23, before: '♎ 天秤座', after: '♏ 天蝎座' },
+            { endDay: 22, before: '♏ 天蝎座', after: '♐ 射手座' },
+            { endDay: 21, before: '♐ 射手座', after: '♑ 摩羯座' }
+        ];
+
+        const maxDays = [31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+
+        const zodiacNames = [
+            ['摩羯座', 'Capricorn'], ['水瓶座', 'Aquarius'], ['双鱼座', 'Pisces'],
+            ['白羊座', 'Aries'], ['金牛座', 'Taurus'], ['双子座', 'Gemini'],
+            ['巨蟹座', 'Cancer'], ['狮子座', 'Leo'], ['处女座', 'Virgo'],
+            ['天秤座', 'Libra'], ['天蝎座', 'Scorpio'], ['射手座', 'Sagittarius']
+        ];
+        const signNotes = [
+            ['踏实可靠，做事有耐心，总会默默把重要的事做好。', 'Steady and dependable, you bring patience and quiet determination to what matters.'],
+            ['点子多又有主见，喜欢用自己的方式探索世界。', 'Original and curious, you enjoy exploring the world in your own way.'],
+            ['温柔敏锐、想象力丰富，很懂得感受别人的心情。', 'Gentle and imaginative, you are thoughtful about how others feel.'],
+            ['热情直接、勇于尝试，总能带来行动的勇气。', 'Bold and enthusiastic, you bring energy and courage to new adventures.'],
+            ['稳重又有品味，擅长把舒服的小日子过得有质感。', 'Grounded and warm-hearted, you know how to make everyday life feel special.'],
+            ['聪明健谈、反应很快，总能让聊天变得有趣。', 'Quick-witted and social, you have a gift for making conversations lively.'],
+            ['体贴重感情，会用细心和陪伴照顾身边的人。', 'Caring and sentimental, you show love through little acts of support.'],
+            ['大方有活力，喜欢分享热情，也很会鼓励朋友。', 'Generous and bright, you love sharing enthusiasm and cheering friends on.'],
+            ['细心可靠、观察力好，总能留意到容易被忽略的细节。', 'Thoughtful and observant, you notice the details others might miss.'],
+            ['友善懂得倾听，重视公平，也擅长找到相处的平衡。', 'Kind and fair-minded, you listen well and help people find common ground.'],
+            ['真诚专注、直觉敏锐，对在乎的人有很深的情谊。', 'Loyal and perceptive, you form deep bonds with the people you care about.'],
+            ['乐观爱冒险，喜欢新鲜事，也能把好奇心分享给朋友。', 'Optimistic and adventurous, you bring curiosity and a sense of fun to friendship.']
+        ];
+        const signProfiles = [
+            [['现实、有责任感、目标明确。', 'Practical, responsible, and goal-oriented.'], ['喜欢先计划再行动；习惯把承诺和待办一件件完成。', 'Likes to plan ahead and steadily finish promises and to-dos.'], ['ISTJ / INTJ（趣味联想）', 'ISTJ / INTJ (for fun)']],
+            [['独立、有创意、重视个人空间。', 'Independent, inventive, and protective of personal space.'], ['爱尝试新点子；习惯按自己的节奏探索，不爱被催。', 'Enjoys new ideas and exploring at their own pace, without being rushed.'], ['INTP / ENTP（趣味联想）', 'INTP / ENTP (for fun)']],
+            [['敏感、富有想象力、善于共情。', 'Sensitive, imaginative, and empathetic.'], ['常沉浸在音乐或想象中；习惯先感受气氛再表达。', 'Often gets lost in music or imagination; reads the mood before speaking.'], ['INFP / ISFP（趣味联想）', 'INFP / ISFP (for fun)']],
+            [['主动、勇敢、喜欢挑战。', 'Initiative-taking, brave, and drawn to challenges.'], ['想到就想马上试试；习惯用行动开启新计划。', 'Likes to try ideas right away and kick off plans through action.'], ['ESTP / ENTJ（趣味联想）', 'ESTP / ENTJ (for fun)']],
+            [['稳重、耐心、重视舒适与品质。', 'Grounded, patient, and appreciative of comfort and quality.'], ['偏爱熟悉的节奏；习惯用美食、休息和小仪式充电。', 'Prefers a familiar rhythm and recharges with good food, rest, and rituals.'], ['ISFJ / ISTJ（趣味联想）', 'ISFJ / ISTJ (for fun)']],
+            [['机敏、好奇、表达力强。', 'Quick-minded, curious, and expressive.'], ['喜欢同时聊好几个话题；习惯靠交流和新鲜信息保持活力。', 'Enjoys juggling topics and stays energized through conversation and new information.'], ['ENTP / ENFP（趣味联想）', 'ENTP / ENFP (for fun)']],
+            [['体贴、念旧、保护欲强。', 'Caring, sentimental, and protective.'], ['重视熟悉感；习惯记住重要日子，并通过陪伴表达关心。', 'Values familiarity, remembers important dates, and shows care by being present.'], ['ISFJ / INFJ（趣味联想）', 'ISFJ / INFJ (for fun)']],
+            [['热情、大方、乐于鼓励别人。', 'Warm, generous, and encouraging.'], ['喜欢把开心的事分享出来；习惯主动带气氛、给朋友打气。', 'Loves sharing good moments and naturally lifts the room and friends up.'], ['ESFP / ENFJ（趣味联想）', 'ESFP / ENFJ (for fun)']],
+            [['细致、务实、乐于解决问题。', 'Detailed, practical, and eager to solve problems.'], ['习惯整理安排、提前准备；常用实际帮忙表达在意。', 'Likes organizing and preparing ahead; often shows care through practical help.'], ['ISTJ / ESTJ（趣味联想）', 'ISTJ / ESTJ (for fun)']],
+            [['友善、重视公平、擅长协调。', 'Friendly, fair-minded, and skilled at finding balance.'], ['习惯先听各方想法；喜欢让环境和关系都保持舒服。', 'Usually hears everyone out and likes keeping spaces and relationships harmonious.'], ['ENFJ / ESFJ（趣味联想）', 'ENFJ / ESFJ (for fun)']],
+            [['专注、敏锐、情感深刻。', 'Focused, perceptive, and emotionally deep.'], ['习惯先观察再信任；认定重要的人后会非常忠诚。', 'Observes before trusting and becomes deeply loyal once someone matters.'], ['INFJ / INTJ（趣味联想）', 'INFJ / INTJ (for fun)']],
+            [['乐观、坦率、热爱探索。', 'Optimistic, candid, and eager to explore.'], ['喜欢临时起意的小冒险；习惯边体验边学习，不爱一成不变。', 'Enjoys spontaneous mini-adventures and learns by experience rather than routine.'], ['ENFP / ESTP（趣味联想）', 'ENFP / ESTP (for fun)']]
+        ];
+        let relationshipMode = 'friendship';
+        const translations = {
+            zh: {
+                title: '星友默契', subtitle: '输入生日，看看你和好友的星座默契',
+                you: '你', friend: '好友', partner: '恋人', month: '出生月份', day: '出生日期',
+                friendshipMode: '好友默契', romanceMode: '情侣亲密度',
+                submit: '查询星座与亲密度', resultFriend: '你们的好友默契', resultLove: '你们的情侣亲密度',
+                scoreFriend: '好友默契分', scoreLove: '情侣亲密度',
+                days: (n) => '生日相隔 ' + n + ' 天（按闰年日历循环计算）',
+                errorEmpty: '请完整填写你和好友的月份、日期',
+                errorInteger: '月份和日期必须是整数',
+                errorMonth: (name) => name + '的月份无效，请输入 1-12',
+                errorDate: (name, month, day) => name + '的生日无效：' + month + ' 月没有 ' + day + ' 日',
+                perfectFriend: '生日很接近，像是同一季节的小队友！一起积累的小回忆，会让默契越来越好。',
+                closeFriend: '你们的生日在日历上相距不远，可能很容易找到共同的生活节奏。多分享日常，友谊会更有默契。',
+                middleFriend: '你们的生日落在不同季节，个性和生活节奏可能各有特色。互相好奇、欣赏差异，会让友谊更有趣。',
+                farFriend: '你们的生日相隔较远，像是来自不同季节的能量。保持耐心和坦诚交流，就能找到舒服的相处方式。',
+                perfectLove: '你们的生日靠得很近，容易感受到相似的生活节奏。记得也给彼此惊喜和空间，让熟悉感一直保有新鲜。',
+                closeLove: '你们在日历上相距不远，可能很快找到共同节奏。把欣赏说出来，也坦诚表达需要，感情会更踏实。',
+                middleLove: '你们的生日相隔一段距离，代表着不同的节奏与视角。把差异当作了解彼此的入口，会让关系更有层次。',
+                farLove: '你们像来自不同季节，彼此吸引也需要磨合。保持耐心、认真沟通，并尊重各自的空间。',
+                disclaimer: '生日距离是趣味计分，不代表真实关系或人格；真正的亲密来自理解与相处。',
+                signHeading: '星座小档案', personality: '性格', habits: '日常习惯',
+                mbti: 'MBTI 趣味倾向', mbtiNote: '仅为星座联想，不能代替 MBTI 测评。',
+                pageTitle: '星友默契'
+            },
+            en: {
+                title: 'Zodiac Buddies', subtitle: 'Enter two birthdays to discover your zodiac vibe',
+                you: 'You', friend: 'Friend', partner: 'Partner', month: 'Birth month', day: 'Birth day',
+                friendshipMode: 'Friendship', romanceMode: 'Romance',
+                submit: 'Check zodiac & closeness', resultFriend: 'Your friendship vibe', resultLove: 'Your romantic closeness',
+                scoreFriend: 'Friendship vibe', scoreLove: 'Romantic closeness',
+                days: (n) => n + ' day' + (n === 1 ? '' : 's') + ' apart (calendar cycle)',
+                errorEmpty: 'Please enter both birthdays.',
+                errorInteger: 'Month and day must be whole numbers.',
+                errorMonth: (name) => name + ': month must be from 1 to 12.',
+                errorDate: (name, month, day) => name + ': ' + month + ' has no day ' + day + '.',
+                perfectFriend: 'Your birthdays are close, like teammates from the same season! Shared little memories can make your bond even brighter.',
+                closeFriend: 'Your birthdays sit near each other on the calendar, so your rhythms may feel familiar. Share the everyday moments and your friendship can grow naturally.',
+                middleFriend: 'Your birthdays fall in different parts of the year, bringing distinct rhythms and perspectives. Curiosity about those differences can make your friendship more fun.',
+                farFriend: 'Your birthdays are farther apart, like energy from different seasons. Patience and honest conversation can help you find a comfortable rhythm together.',
+                perfectLove: 'Your birthdays are close, so your everyday rhythms may feel familiar. Keep surprising each other and make room for new experiences.',
+                closeLove: 'You are close on the calendar and may find a shared rhythm quickly. Say what you appreciate and be honest about what you need.',
+                middleLove: 'Your birthdays bring different rhythms and perspectives. Treat those differences as a way to keep learning about each other.',
+                farLove: 'You may feel like energy from different seasons. Patience, honest conversation, and respect for space can help you find your rhythm.',
+                disclaimer: 'This playful score uses birthday distance; it cannot measure a real relationship or personality.',
+                signHeading: 'Zodiac snapshots', personality: 'Personality', habits: 'Everyday habits',
+                mbti: 'MBTI for fun', mbtiNote: 'A zodiac-inspired guess, not an MBTI assessment.',
+                pageTitle: 'Zodiac Buddies'
+            }
+        };
+
+        function showError(message) {
+            resultDiv.hidden = false;
+            resultDiv.classList.add('error');
+            resultDiv.textContent = message;
+        }
+
+        function calculateZodiac(month, day) {
+            const rule = zodiacRules[month - 1];
+            return day <= rule.endDay ? month - 1 : month % 12;
+        }
+
+        function getDayOfYear(month, day) {
+            return Date.UTC(2024, month - 1, day) / 86400000;
+        }
+
+        function getBirthdayDistance(firstDate, secondDate) {
+            const difference = Math.abs(getDayOfYear(...firstDate) - getDayOfYear(...secondDate));
+            return Math.min(difference, 366 - difference);
+        }
+
+        function getCompatibility(distance) {
+            return Math.round(100 - (distance / 183) * 60);
+        }
+
+        function interpretationFor(distance) {
+            const copy = translations[language];
+            const tier = distance <= 30 ? 'perfect' : distance <= 90 ? 'close' : distance <= 150 ? 'middle' : 'far';
+            return copy[tier + (relationshipMode === 'romance' ? 'Love' : 'Friend')];
+        }
+
+        function applySelections() {
+            const copy = translations[language];
+            document.querySelectorAll('[data-i18n]').forEach((element) => {
+                let key = element.dataset.i18n;
+                if (key === 'friend' && relationshipMode === 'romance') key = 'partner';
+                element.textContent = copy[key];
+            });
+            languageButtons.forEach((button) => {
+                button.setAttribute('aria-pressed', String(button.dataset.language === language));
+            });
+            modeButtons.forEach((button) => {
+                button.setAttribute('aria-pressed', String(button.dataset.mode === relationshipMode));
+            });
+        }
+
+        function setLanguage(nextLanguage) {
+            language = nextLanguage;
+            document.documentElement.lang = language === 'zh' ? 'zh-CN' : 'en';
+            document.title = translations[language].pageTitle;
+            applySelections();
+            if (!resultDiv.hidden && !resultDiv.classList.contains('error')) {
+                form.requestSubmit();
+            } else if (resultDiv.classList.contains('error')) {
+                resultDiv.hidden = true;
+                resultDiv.classList.remove('error');
+            }
+        }
+
+        function renderResult(signs, score, distance) {
+            resultDiv.classList.remove('error');
+            resultDiv.replaceChildren();
+            resultDiv.hidden = false;
+
+            const heading = document.createElement('h2');
+            heading.className = 'result-heading';
+            const copy = translations[language];
+            heading.textContent = copy[relationshipMode === 'romance' ? 'resultLove' : 'resultFriend'];
+
+            const pair = document.createElement('div');
+            pair.className = 'zodiac-pair';
+            signs.forEach((sign, index) => {
+                const person = document.createElement('div');
+                person.className = 'zodiac-person';
+                const name = document.createElement('strong');
+                name.textContent = copy[index === 0 ? 'you' : relationshipMode === 'romance' ? 'partner' : 'friend'];
+                const zodiac = document.createElement('span');
+                zodiac.textContent = zodiacNames[sign][language === 'zh' ? 0 : 1];
+                person.append(name, zodiac);
+                pair.append(person);
+                if (index === 0) {
+                    const mark = document.createElement('span');
+                    mark.className = 'pair-mark';
+                    mark.setAttribute('aria-hidden', 'true');
+                    mark.textContent = '✦';
+                    pair.append(mark);
+                }
+            });
+
+            const scoreLine = document.createElement('div');
+            scoreLine.className = 'score-line';
+            const scoreLabel = document.createElement('span');
+            scoreLabel.textContent = copy[relationshipMode === 'romance' ? 'scoreLove' : 'scoreFriend'];
+            const scoreValue = document.createElement('strong');
+            scoreValue.textContent = language === 'zh' ? score + '分' : score + '%';
+            scoreLine.append(scoreLabel, scoreValue);
+
+            const track = document.createElement('div');
+            track.className = 'score-track';
+            track.setAttribute('role', 'progressbar');
+            track.setAttribute('aria-label', copy[relationshipMode === 'romance' ? 'scoreLove' : 'scoreFriend']);
+            track.setAttribute('aria-valuemin', '0');
+            track.setAttribute('aria-valuemax', '100');
+            track.setAttribute('aria-valuenow', String(score));
+            const fill = document.createElement('div');
+            fill.className = 'score-fill';
+            fill.style.width = score + '%';
+            track.append(fill);
+
+            const interpretation = document.createElement('p');
+            interpretation.className = 'interpretation';
+            interpretation.textContent = interpretationFor(distance);
+            const dateDistance = document.createElement('p');
+            dateDistance.className = 'date-distance';
+            dateDistance.textContent = translations[language].days(distance);
+            const notesHeading = document.createElement('h3');
+            notesHeading.className = 'result-heading';
+            notesHeading.style.marginTop = '20px';
+            notesHeading.textContent = copy.signHeading;
+            const notes = document.createElement('div');
+            notes.className = 'sign-notes';
+            signs.forEach((sign, index) => {
+                const note = document.createElement('p');
+                note.className = 'sign-note';
+                const signName = document.createElement('strong');
+                signName.textContent = copy[index === 0 ? 'you' : relationshipMode === 'romance' ? 'partner' : 'friend'] + ' · ' + zodiacNames[sign][language === 'zh' ? 0 : 1];
+                note.append(signName);
+                [
+                    [copy.personality, signProfiles[sign][0][language === 'zh' ? 0 : 1]],
+                    [copy.habits, signProfiles[sign][1][language === 'zh' ? 0 : 1]],
+                    [copy.mbti, signProfiles[sign][2][language === 'zh' ? 0 : 1]]
+                ].forEach(([label, value]) => {
+                    const section = document.createElement('span');
+                    section.className = 'profile-section';
+                    const category = document.createElement('span');
+                    category.className = 'profile-label';
+                    category.textContent = label;
+                    const detail = document.createElement('span');
+                    detail.className = 'profile-copy';
+                    detail.textContent = value;
+                    section.append(category, detail);
+                    note.append(section);
+                });
+                const mbtiNote = document.createElement('span');
+                mbtiNote.className = 'mbti-note';
+                mbtiNote.textContent = copy.mbtiNote;
+                note.append(mbtiNote);
+                notes.append(note);
+            });
+            const disclaimer = document.createElement('p');
+            disclaimer.className = 'disclaimer';
+            disclaimer.textContent = translations[language].disclaimer;
+            resultDiv.append(heading, pair, scoreLine, track, dateDistance, interpretation, notesHeading, notes, disclaimer);
+        }
+
+        languageButtons.forEach((button) => {
+            button.addEventListener('click', () => setLanguage(button.dataset.language));
+        });
+        modeButtons.forEach((button) => {
+            button.addEventListener('click', () => {
+                relationshipMode = button.dataset.mode;
+                applySelections();
+                if (!resultDiv.hidden && !resultDiv.classList.contains('error')) form.requestSubmit();
+            });
+        });
+
+        form.addEventListener('submit', (event) => {
+            event.preventDefault();
+
+            const signs = [];
+            for (const person of people) {
+                const monthText = person.monthInput.value.trim();
+                const dayText = person.dayInput.value.trim();
+
+                if (monthText === '' || dayText === '') {
+                    showError(translations[language].errorEmpty);
+                    return;
+                }
+
+                const month = Number(monthText);
+                const day = Number(dayText);
+                if (!Number.isInteger(month) || !Number.isInteger(day)) {
+                    showError(translations[language].errorInteger);
+                    return;
+                }
+                if (month < 1 || month > 12) {
+                    showError(translations[language].errorMonth(translations[language][people.indexOf(person) === 0 ? 'you' : 'friend']));
+                    return;
+                }
+                if (day < 1 || day > maxDays[month - 1]) {
+                    showError(translations[language].errorDate(translations[language][people.indexOf(person) === 0 ? 'you' : 'friend'], month, day));
+                    return;
+                }
+                signs.push(calculateZodiac(month, day));
+            }
+
+            const dates = people.map((person) => [Number(person.monthInput.value), Number(person.dayInput.value)]);
+            const distance = getBirthdayDistance(dates[0], dates[1]);
+            const score = getCompatibility(distance);
+            renderResult(signs, score, distance);
+        });
+    </script>
+</body>
+</html>
